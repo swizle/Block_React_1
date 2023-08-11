@@ -3,9 +3,7 @@ import React from 'react';
 import Task from '../Task'
 import './TaskList.css';
 
-const TaskList = ( props ) => {
-  const { tasks } = props;
-
+const TaskList = ( { tasks, onDeleted } ) => {
   return (
     <ul className="todo-list">
       {tasks.map( ( task ) => (
@@ -15,6 +13,7 @@ const TaskList = ( props ) => {
           created={task.created}
           completed={task.completed}
           editing={task.editing}
+          onDeleted={() => onDeleted( task.id )}
         />
       ) )}
     </ul>
