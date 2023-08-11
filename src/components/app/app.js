@@ -2,7 +2,8 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 import NewTaskForm from '../NewTaskForm';
-import TasksFilter from '../TasksFilter';
+import TaskList from '../TaskList';
+import Footer from '../Footer';
 
 import './app.css';
 
@@ -32,10 +33,13 @@ const tasks = [
 
 const App = () => {
   return (
-    <div className="todoapp">
+    <section className="todoapp">
       <NewTaskForm />
-      <TasksFilter tasks={tasks} />
-    </div>
-  );  
-  }
+      <section className='main'>
+        <TaskList tasks={tasks} />
+        <Footer />
+      </section>
+    </section>
+  );
+}
 export default App;

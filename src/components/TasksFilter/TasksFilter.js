@@ -1,15 +1,20 @@
 import React from 'react';
 
-import TaskList from '../TaskList';
-import Footer from '../Footer';
 import './TasksFilter.css';
 
-const TasksFilter = ( { tasks } ) => {
+const TasksFilter = () => {
   return (
-    <section className="main">
-      <TaskList tasks={tasks} />
-      <Footer />
-    </section>
+    <ul className='filters'>
+      <li>
+        <button className='selected'>All</button>
+      </li>
+      <li>
+        <button>Active</button>
+      </li>
+      <li>
+        <button>Completed</button>
+      </li>
+    </ul>
   );
 }
 

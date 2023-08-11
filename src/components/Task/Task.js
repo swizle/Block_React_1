@@ -7,16 +7,16 @@ const Task = ( props ) => {
 
   return (
     <li className={completed ? 'completed' : editing ? 'editing' : ''}>
-      <div className="view">
-        <input className="toggle" type="checkbox" checked={completed} />
+      <div className='view'>
+        <input className='toggle' type='checkbox' checked={completed} />
         <label>
-          <span className="description">{description}</span>
-          <span className="created">created {created}</span>
+          <span className='description'>{description}</span>
+          <span className='created'>created {created}</span>
         </label>
-        <button className="icon icon-edit"></button>
-        <button className="icon icon-destroy"></button>
+        <button className='icon icon-edit'></button>
+        <button className='icon icon-destroy'></button>
       </div>
-      {editing && <input type="text" className="edit" value={description} />}
+      {editing && <input type='text' className='edit' value={description} />}
     </li>
   );
 }
