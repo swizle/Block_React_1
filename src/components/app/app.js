@@ -20,19 +20,32 @@ export default class App extends Component {
       },
       {
         id: 2,
-        description: 'Editing task',
-        created: formatDistanceToNow( new Date( 2023, 2, 2, 20, 20, 15 ) ),
-        completed: false,
-        editing: true,
-      },
-      {
-        id: 3,
         description: 'Active task',
         created: formatDistanceToNow( new Date( 2023, 2, 2, 20, 20, 5 ) ),
         completed: false,
-        editing: false,
+        editing: true,
       },
-    ]
+    ],
+    filter: 'All',
+  }
+
+  AddTask = ( text ) => {
+    this.setState( ( { tasks } ) => {
+
+      const newItem = {
+        id: tasks.length + 1,
+        description: text,
+        created: formatDistanceToNow( new Date() ),
+        completed: false,
+        editing: false,
+      }
+
+      const newArr = [...tasks, newItem];
+
+      return {
+        tasks: newArr
+      };
+    } );
   }
 
   DeleteTask = ( id ) => {
@@ -50,13 +63,64 @@ export default class App extends Component {
     } );
   }
 
+  toggleProperty ( arr, id, propName ) {
+    const idx = arr.findIndex( ( el ) => el.id === id );
+
+    const oldItem = arr[idx];
+    const newItem = {
+      ...oldItem,
+      [propName]: !oldItem[propName]
+    };
+
+    return [
+      ...arr.slice( 0, idx ),
+      newItem,
+      ...arr.slice( idx + 1 )
+    ];
+  }
+
+  TaskClick = ( id ) => {
+    this.setState( ( { tasks } ) => {
+      return {
+        tasks: this.toggleProperty( tasks, id, 'completed' )
+      };
+    } );
+  };
+
+  changeFilter = ( data ) => {
+    this.setState( { filter: data } );
+  }
+
+  clearCompleted = () => {
+    this.setState( ( { tasks } ) => {
+      return {
+        tasks: tasks.filter( ( element ) => !element.completed )
+      }
+    } );
+  }
+
+  filteredItems = () => {
+    const { tasks, filter } = this.state;
+    return tasks.filter( ( { completed } ) => {
+      const all = filter === 'All';
+      const complete = filter === 'Completed';
+      return all ? true : complete ? completed === true : completed === false;
+    } );
+  }
+
   render () {
     return (
       <section className="todoapp" >
-        <NewTaskForm />
+        <NewTaskForm onAddTask={this.AddTask} />
         <section className='main'>
-          <TaskList tasks={this.state.tasks} onDeleted={this.DeleteTask} />
-          <Footer />
+          <TaskList tasks={this.filteredItems()}
+            onDeleted={this.DeleteTask}
+            onTaskClick={this.TaskClick} />
+          <Footer
+            changeFilter={this.changeFilter}
+            clearCompleted={this.clearCompleted}
+            lefts={this.state.tasks.filter( ( { completed } ) => !completed ).length}
+            filter={this.state.filter} />
         </section>
       </section>
     );

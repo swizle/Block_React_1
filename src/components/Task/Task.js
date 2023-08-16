@@ -8,31 +8,29 @@ export default class Task extends Component {
     completed: '',
   };
 
-  onTaskClick = () => {
-    this.setState( () => {
-      return {
-        completed: 'completed'
-      };
-    } );
-  };
-
   render () {
 
-    let { description, created, completed, editing } = this.props;
-    completed = this.state.completed;
+    let { description, created, completed, editing, onDeleted, onTaskClick } = this.props;
+
+    let classNames = '';
+    if ( completed ) {
+      classNames += 'completed';
+    }
 
     return (
-      <li className={completed ? 'completed' : editing ? 'editing' : ''}>
+      <li className={classNames}>
         <div className='view'>
-          <input className='toggle' type='checkbox' checked={completed} onClick={this.onTaskClick} />
+          <input className='toggle' type='checkbox' defaultChecked={completed} onClick={onTaskClick} />
           <label>
             <span className='description'>{description}</span>
             <span className='created'>created {created}</span>
           </label>
           <button className='icon icon-edit'></button>
-          <button className='icon icon-destroy' onClick={this.props.onDeleted}></button>
+          <button className='icon icon-destroy' onClick={onDeleted}></button>
         </div>
-        {editing && <input type='text' className='edit' value={description} />}
+        {editing && <form onSubmit={this.handleSubmit}>
+          <input type='text' className='edit' value={description} />
+        </form>}
       </li>
     );
   }
