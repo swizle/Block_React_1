@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import './TasksFilter.css';
 
@@ -27,3 +28,12 @@ export default class TasksFilter extends Component {
     );
   }
 }
+
+TasksFilter.propTypes = {
+  filter: PropTypes.string,
+  changeFilter: PropTypes.func.isRequired,
+};
+
+TasksFilter.defaultProps = {
+  filter: 'All',
+};
