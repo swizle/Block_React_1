@@ -5,20 +5,20 @@ import './NewTaskForm.css';
 export default class NewTaskForm extends Component {
 
   state = {
-    label: ''
+    description: ''
   };
 
-  onLabelChange = ( e ) => {
+  onDescriptionChange = ( e ) => {
     this.setState( {
-      label: e.target.value
+      description: e.target.value
     } );
   };
 
   onSubmit = ( e ) => {
     e.preventDefault();
-    this.props.onAddTask( this.state.label );
+    this.props.onAddTask( this.state.description );
     this.setState( {
-      label: ''
+      description: ''
     } );
   };
 
@@ -28,9 +28,9 @@ export default class NewTaskForm extends Component {
         <form onSubmit={this.onSubmit}>
           <h1>todos</h1>
           <input className='new-todo'
-            onChange={this.onLabelChange}
+            onChange={this.onDescriptionChange}
             placeholder="What needs to be done"
-            value={this.state.label} />
+            value={this.state.description} />
         </form>
       </header>
     );

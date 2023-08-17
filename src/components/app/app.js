@@ -63,6 +63,33 @@ export default class App extends Component {
     } );
   }
 
+  EditTask = ( id, text ) => {
+    this.setState( ( { tasks } ) => {
+      return {
+        tasks: tasks.map( ( element ) => {
+          if ( element.id === id ) element.description = text;
+          return element;
+        } ),
+      }
+    } );
+  }
+
+  EditProperty ( arr, id, text, propName ) {
+    const idx = arr.findIndex( ( el ) => el.id === id );
+
+    const oldItem = arr[idx];
+    const newItem = {
+      ...oldItem,
+      [propName]: text
+    };
+
+    return [
+      ...arr.slice( 0, idx ),
+      newItem,
+      ...arr.slice( idx + 1 )
+    ];
+  }
+
   toggleProperty ( arr, id, propName ) {
     const idx = arr.findIndex( ( el ) => el.id === id );
 
@@ -83,6 +110,14 @@ export default class App extends Component {
     this.setState( ( { tasks } ) => {
       return {
         tasks: this.toggleProperty( tasks, id, 'completed' )
+      };
+    } );
+  };
+
+  EditClick = ( id ) => {
+    this.setState( ( { tasks } ) => {
+      return {
+        tasks: this.toggleProperty( tasks, id, 'editing' )
       };
     } );
   };
@@ -115,7 +150,9 @@ export default class App extends Component {
         <section className='main'>
           <TaskList tasks={this.filteredItems()}
             onDeleted={this.DeleteTask}
-            onTaskClick={this.TaskClick} />
+            onTaskClick={this.TaskClick}
+            onEditClick={this.EditClick}
+            onEditTask={this.EditTask} />
           <Footer
             changeFilter={this.changeFilter}
             clearCompleted={this.clearCompleted}
