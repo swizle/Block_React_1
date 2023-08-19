@@ -10,13 +10,7 @@ import './app.css';
 export default class App extends Component {
   state = {
     tasks: [
-      {
-        id: 1,
-        description: 'Completed task',
-        created: formatDistanceToNow(new Date(2023, 2, 2, 20, 20, 20)),
-        completed: true,
-        editing: false,
-      },
+      {},
     ],
     filter: 'All',
   };
