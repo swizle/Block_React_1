@@ -10,7 +10,6 @@ import './app.css';
 export default class App extends Component {
   state = {
     tasks: [
-      {},
     ],
     filter: 'All',
   };

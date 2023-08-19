@@ -40,7 +40,7 @@ TaskList.propTypes = {
 };
 
 TaskList.defaultProps = {
-  tasks: {},
+  tasks: [],
 };
 
 export default TaskList;
