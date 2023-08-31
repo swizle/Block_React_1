@@ -58,11 +58,14 @@ export default class Task extends Component {
         {editing && (
           <form onSubmit={this.onSubmit}>
             <input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
               type="text"
               id={`edit-input-${task.id}`}
               className="edit"
               value={description2}
               onChange={(e) => this.setState({ description2: e.target.value })}
+              onKeyDown={(e) => { if (e.key === 'Escape') { onEditClick(); } }}
             />
           </form>
         )}

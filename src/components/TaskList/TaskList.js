@@ -12,6 +12,7 @@ function TaskList({
     <ul className="todo-list">
       {tasks.map((task) => (
         <Task
+          key={task.id}
           task={task}
           onDeleted={() => onDeleted(task.id)}
           onTaskClick={() => onTaskClick(task.id)}

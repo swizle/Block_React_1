@@ -12,39 +12,32 @@ export default class App extends Component {
     tasks: [
     ],
     filter: 'All',
+    idList: 0,
   };
 
   AddTask = (text) => {
-    this.setState(({ tasks }) => {
-      const newItem = {
-        id: tasks.length + 1,
-        description: text,
-        created: formatDistanceToNow(new Date()),
-        completed: false,
-        editing: false,
-      };
+    const { idList } = this.state;
 
-      const newArr = [...tasks, newItem];
+    const newItem = {
+      id: idList,
+      description: text,
+      created: formatDistanceToNow(new Date()),
+      completed: false,
+      editing: false,
+    };
 
-      return {
-        tasks: newArr,
-      };
-    });
+    const newIdList = idList + 1;
+
+    this.setState((prevState) => ({
+      tasks: [...prevState.tasks, newItem],
+      idList: newIdList,
+    }));
   };
 
   DeleteTask = (id) => {
-    this.setState(({ tasks }) => {
-      const idx = tasks.findIndex((el) => el.id === id);
-
-      const before = tasks.slice(0, idx);
-      const after = tasks.slice(idx + 1);
-
-      const newArr = [...before, ...after];
-
-      return {
-        tasks: newArr,
-      };
-    });
+    this.setState(({ tasks }) => ({
+      tasks: tasks.filter((task) => task.id !== id),
+    }));
   };
 
   EditTask = (id, text) => {
@@ -109,6 +102,7 @@ export default class App extends Component {
 
   render() {
     const { tasks, filter } = this.state;
+
     return (
       <section className="todoapp">
         <NewTaskForm onAddTask={this.AddTask} />

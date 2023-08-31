@@ -19,10 +19,12 @@ export default class NewTaskForm extends Component {
     const { onAddTask } = this.props;
     const { description } = this.state;
 
-    onAddTask(description);
-    this.setState({
-      description: '',
-    });
+    if (description.trim() !== '') {
+      onAddTask(description);
+      this.setState({
+        description: '',
+      });
+    }
   };
 
   render() {
