@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
 
 import './Task.css';
 
@@ -32,17 +33,8 @@ export default class Task extends Component {
     } = task;
     const { description2 } = this.state;
 
-    let classNames = '';
-    if (completed) {
-      classNames += ' completed';
-    }
-
-    if (editing) {
-      classNames += ' editing';
-    }
-
     return (
-      <li className={classNames}>
+      <li className={cn(task, { completed, editing })}>
         <div className="view">
           <input className="toggle" id={`task-${id}`} type="checkbox" defaultChecked={completed} onClick={onTaskClick} />
           <label htmlFor={`edit-input-${id}`}>

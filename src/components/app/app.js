@@ -89,26 +89,23 @@ export default class App extends Component {
     }));
   };
 
-  filteredItems = () => {
-    const { tasks, filter } = this.state;
-
-    if (filter === 'All') {
-      return tasks;
-    } if (filter === 'Completed') {
-      return tasks.filter(({ completed }) => completed === true);
-    }
-    return tasks.filter(({ completed }) => completed === false);
-  };
-
   render() {
     const { tasks, filter } = this.state;
+    const filterItems = ['All', 'Active', 'Completed'];
 
     return (
       <section className="todoapp">
         <NewTaskForm onAddTask={this.AddTask} />
         <section className="main">
           <TaskList
-            tasks={this.filteredItems()}
+            tasks={tasks.map((task) => {
+              if (filter === filterItems[0]
+                || (filter === filterItems[1] && !task.completed)
+                || (filter === filterItems[2] && task.completed)) {
+                return task;
+              }
+              return null;
+            }).filter((task) => task !== null)}
             onDeleted={this.DeleteTask}
             onTaskClick={this.TaskClick}
             onEditClick={this.EditClick}
