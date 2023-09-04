@@ -4,23 +4,21 @@ import PropTypes from 'prop-types';
 import './TasksFilter.css';
 
 function TasksFilter({ filter, changeFilter }) {
+  const filterOptions = ['All', 'Active', 'Completed'];
+
   return (
     <ul className="filters">
-      <li>
-        <button type="button" onClick={() => changeFilter('All')} className={filter === 'All' ? 'selected' : null}>
-          All
-        </button>
-      </li>
-      <li>
-        <button type="button" onClick={() => changeFilter('Active')} className={filter === 'Active' ? 'selected' : null}>
-          Active
-        </button>
-      </li>
-      <li>
-        <button type="button" onClick={() => changeFilter('Completed')} className={filter === 'Completed' ? 'selected' : null}>
-          Completed
-        </button>
-      </li>
+      {filterOptions.map((option) => (
+        <li key={option}>
+          <button
+            type="button"
+            onClick={() => changeFilter(option)}
+            className={filter === option ? 'selected' : null}
+          >
+            {option}
+          </button>
+        </li>
+      ))}
     </ul>
   );
 }
