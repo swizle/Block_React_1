@@ -8,7 +8,7 @@ import './Task.css';
 export default class Task extends Component {
   state = {
     description2: this.getDescription(),
-    timerSeconds: 0,
+    timerSeconds: this.getTimer(),
     timerIsRunning: false,
   };
 
@@ -26,12 +26,17 @@ export default class Task extends Component {
     return description;
   }
 
+  getTimer() {
+    const { task: { time } } = this.props;
+    return time;
+  }
+
   startTimer = () => {
     const { timerIsRunning } = this.state;
     if (!timerIsRunning) {
       this.setState({ timerIsRunning: true });
       this.interval = setInterval(() => {
-        this.setState((prevState) => ({ timerSeconds: prevState.timerSeconds + 1 }));
+        this.setState((prevState) => ({ timerSeconds: prevState.timerSeconds - 1 }));
       }, 1000);
     }
   };
@@ -53,13 +58,20 @@ export default class Task extends Component {
     } = task;
     const { description2, timerSeconds, timerIsRunning } = this.state;
 
+    const getColor = () => {
+      if (timerIsRunning) {
+        return 'red';
+      }
+      return 'gray';
+    };
+
     return (
       <li className={cn(task, { completed, editing })}>
         <div className="view">
           <input className="toggle" id={`task-${id}`} type="checkbox" defaultChecked={completed} onClick={onTaskClick} />
           <label htmlFor={`edit-input-${id}`}>
             <span className="title">{description}</span>
-            <span className="description">
+            <span className="description" style={{ color: getColor() }}>
               <button type="button" className="icon icon-play" onClick={this.startTimer} disabled={timerIsRunning} />
               <button type="button" className="icon icon-pause" onClick={this.stopTimer} disabled={!timerIsRunning} />
               {timerSeconds}
@@ -98,6 +110,7 @@ Task.propTypes = {
     created: PropTypes.string,
     completed: PropTypes.bool,
     editing: PropTypes.bool,
+    time: PropTypes.string,
   }),
   onDeleted: PropTypes.func.isRequired,
   onTaskClick: PropTypes.func.isRequired,

@@ -15,7 +15,7 @@ export default class App extends Component {
     idList: 0,
   };
 
-  AddTask = (text) => {
+  AddTask = (text, timer) => {
     const { idList } = this.state;
 
     const newItem = {
@@ -24,6 +24,7 @@ export default class App extends Component {
       created: formatDistanceToNow(new Date()),
       completed: false,
       editing: false,
+      time: timer,
     };
 
     const newIdList = idList + 1;

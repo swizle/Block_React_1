@@ -32,6 +32,7 @@ TaskList.propTypes = {
       created: PropTypes.string,
       completed: PropTypes.bool,
       editing: PropTypes.bool,
+      time: PropTypes.string,
     }),
   ),
   onDeleted: PropTypes.func.isRequired,

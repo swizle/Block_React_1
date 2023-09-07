@@ -6,6 +6,8 @@ import './NewTaskForm.css';
 export default class NewTaskForm extends Component {
   state = {
     description: '',
+    timerSec: '',
+    timerMin: '',
   };
 
   onDescriptionChange = (e) => {
@@ -14,21 +16,41 @@ export default class NewTaskForm extends Component {
     });
   };
 
+  onTimerSecChange = (e) => {
+    this.setState({
+      timerSec: e.target.value,
+    });
+  };
+
+  onTimerMinChange = (e) => {
+    this.setState({
+      timerMin: e.target.value,
+    });
+  };
+
   onSubmit = (e) => {
     e.preventDefault();
     const { onAddTask } = this.props;
-    const { description } = this.state;
+    const { description, timerSec, timerMin } = this.state;
 
-    if (description.trim() !== '') {
-      onAddTask(description);
+    if (description.trim() !== '' && (timerSec || timerMin)) {
+      onAddTask(description, timerSec + timerMin * 60);
       this.setState({
         description: '',
+        timerSec: 0,
+        timerMin: 0,
       });
     }
   };
 
+  handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      this.onSubmit(e);
+    }
+  };
+
   render() {
-    const { description } = this.state;
+    const { description, timerSec, timerMin } = this.state;
     return (
       <header className="header">
         <form className="new-todo-form" onSubmit={this.onSubmit}>
@@ -36,11 +58,24 @@ export default class NewTaskForm extends Component {
           <input
             className="new-todo"
             onChange={this.onDescriptionChange}
+            onKeyDown={this.handleKeyDown}
             placeholder="What needs to be done"
             value={description}
           />
-          {/* <input className="new-todo-form__timer" placeholder="Min" />
-          <input className="new-todo-form__timer" placeholder="Sec" /> */}
+          <input
+            className="new-todo-form__timer"
+            onKeyDown={this.handleKeyDown}
+            onChange={this.onTimerMinChange}
+            placeholder="Min"
+            value={timerMin}
+          />
+          <input
+            className="new-todo-form__timer"
+            onKeyDown={this.handleKeyDown}
+            onChange={this.onTimerSecChange}
+            placeholder="Sec"
+            value={timerSec}
+          />
         </form>
       </header>
     );

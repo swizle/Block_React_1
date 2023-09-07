@@ -240,7 +240,6 @@ body {
 
 .todo-list li label .description {
 	font-size: 13px;
-	color: gray;
 }
 
 .todo-list li label .created {
