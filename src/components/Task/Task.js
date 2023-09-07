@@ -78,6 +78,7 @@ export default class Task extends Component {
             </span>
             <span className="created">
               created
+              {' '}
               {created}
             </span>
           </label>
