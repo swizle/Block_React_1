@@ -31,7 +31,7 @@ export default class NewTaskForm extends Component {
     const { description } = this.state;
     return (
       <header className="header">
-        <form onSubmit={this.onSubmit}>
+        <form className="new-todo-form" onSubmit={this.onSubmit}>
           <h1>todos</h1>
           <input
             className="new-todo"
@@ -39,6 +39,8 @@ export default class NewTaskForm extends Component {
             placeholder="What needs to be done"
             value={description}
           />
+          {/* <input className="new-todo-form__timer" placeholder="Min" />
+          <input className="new-todo-form__timer" placeholder="Sec" /> */}
         </form>
       </header>
     );

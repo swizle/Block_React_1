@@ -8,6 +8,8 @@ import './Task.css';
 export default class Task extends Component {
   state = {
     description2: this.getDescription(),
+    timerSeconds: 0,
+    timerIsRunning: false,
   };
 
   onSubmit = (e) => {
@@ -24,6 +26,24 @@ export default class Task extends Component {
     return description;
   }
 
+  startTimer = () => {
+    const { timerIsRunning } = this.state;
+    if (!timerIsRunning) {
+      this.setState({ timerIsRunning: true });
+      this.interval = setInterval(() => {
+        this.setState((prevState) => ({ timerSeconds: prevState.timerSeconds + 1 }));
+      }, 1000);
+    }
+  };
+
+  stopTimer = () => {
+    const { timerIsRunning } = this.state;
+    if (timerIsRunning) {
+      clearInterval(this.interval);
+      this.setState({ timerIsRunning: false });
+    }
+  };
+
   render() {
     const {
       task, onDeleted, onTaskClick, onEditClick,
@@ -31,14 +51,19 @@ export default class Task extends Component {
     const {
       id, description, created, completed, editing,
     } = task;
-    const { description2 } = this.state;
+    const { description2, timerSeconds, timerIsRunning } = this.state;
 
     return (
       <li className={cn(task, { completed, editing })}>
         <div className="view">
           <input className="toggle" id={`task-${id}`} type="checkbox" defaultChecked={completed} onClick={onTaskClick} />
           <label htmlFor={`edit-input-${id}`}>
-            <span className="description">{description}</span>
+            <span className="title">{description}</span>
+            <span className="description">
+              <button type="button" className="icon icon-play" onClick={this.startTimer} disabled={timerIsRunning} />
+              <button type="button" className="icon icon-pause" onClick={this.stopTimer} disabled={!timerIsRunning} />
+              {timerSeconds}
+            </span>
             <span className="created">
               created
               {created}
