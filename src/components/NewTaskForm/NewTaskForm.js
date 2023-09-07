@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -43,12 +44,6 @@ export default class NewTaskForm extends Component {
     }
   };
 
-  handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      this.onSubmit(e);
-    }
-  };
-
   render() {
     const { description, timerSec, timerMin } = this.state;
     return (
@@ -58,24 +53,22 @@ export default class NewTaskForm extends Component {
           <input
             className="new-todo"
             onChange={this.onDescriptionChange}
-            onKeyDown={this.handleKeyDown}
             placeholder="What needs to be done"
             value={description}
           />
           <input
             className="new-todo-form__timer"
-            onKeyDown={this.handleKeyDown}
             onChange={this.onTimerMinChange}
             placeholder="Min"
             value={timerMin}
           />
           <input
             className="new-todo-form__timer"
-            onKeyDown={this.handleKeyDown}
             onChange={this.onTimerSecChange}
             placeholder="Sec"
             value={timerSec}
           />
+          <button type="submit" />
         </form>
       </header>
     );
