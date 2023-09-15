@@ -68,6 +68,20 @@ export default class App extends Component {
     return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
   };
 
+  handleTimerFinished = (id, secs) => {
+    this.setState(({ tasks }) => ({
+      tasks: tasks.map((element) => {
+        if (element.id === id) {
+          return {
+            ...element,
+            time: secs,
+          };
+        }
+        return element;
+      }),
+    }));
+  };
+
   TaskClick = (id) => {
     this.setState(({ tasks }) => ({
       tasks: this.ToggleProperty(tasks, id, 'completed'),
@@ -111,6 +125,7 @@ export default class App extends Component {
             onTaskClick={this.TaskClick}
             onEditClick={this.EditClick}
             onEditTask={this.EditTask}
+            onTimerFinished={this.handleTimerFinished}
           />
           <Footer
             changeFilter={this.changeFilter}

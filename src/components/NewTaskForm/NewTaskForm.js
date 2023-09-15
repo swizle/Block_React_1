@@ -35,7 +35,7 @@ export default class NewTaskForm extends Component {
     const { description, timerSec, timerMin } = this.state;
 
     if (description.trim() !== '' && (timerSec || timerMin)) {
-      onAddTask(description, timerSec + timerMin * 60);
+      onAddTask(description, Number(timerSec) + Number(timerMin) * 60);
       this.setState({
         description: '',
         timerSec: 0,

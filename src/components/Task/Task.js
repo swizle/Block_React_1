@@ -12,6 +12,10 @@ export default class Task extends Component {
     timerIsRunning: false,
   };
 
+  componentWillUnmount() {
+    this.stopTimer();
+  }
+
   onSubmit = (e) => {
     e.preventDefault();
     const { onEditTask, onEditClick, task } = this.props;
@@ -32,11 +36,20 @@ export default class Task extends Component {
   }
 
   startTimer = () => {
-    const { timerIsRunning } = this.state;
-    if (!timerIsRunning) {
+    const { timerIsRunning, timerSeconds } = this.state;
+    if (!timerIsRunning && timerSeconds > 0) {
       this.setState({ timerIsRunning: true });
       this.interval = setInterval(() => {
-        this.setState((prevState) => ({ timerSeconds: prevState.timerSeconds - 1 }));
+        this.setState((prevState) => {
+          const { onTimerFinished, task } = this.props;
+          onTimerFinished(task.id, prevState.timerSeconds - 1);
+
+          if (prevState.timerSeconds <= 1) {
+            this.stopTimer();
+            return { timerSeconds: 0 };
+          }
+          return { timerSeconds: prevState.timerSeconds - 1 };
+        });
       }, 1000);
     }
   };
@@ -57,6 +70,7 @@ export default class Task extends Component {
       id, description, created, completed, editing,
     } = task;
     const { description2, timerSeconds, timerIsRunning } = this.state;
+    const x = Math.floor(timerSeconds / 60);
 
     const getColor = () => {
       if (timerIsRunning) {
@@ -74,7 +88,9 @@ export default class Task extends Component {
             <span className="description" style={{ color: getColor() }}>
               <button type="button" className="icon icon-play" onClick={this.startTimer} disabled={timerIsRunning} />
               <button type="button" className="icon icon-pause" onClick={this.stopTimer} disabled={!timerIsRunning} />
-              {timerSeconds}
+              {x}
+              :
+              {timerSeconds - x * 60}
             </span>
             <span className="created">
               created
@@ -111,12 +127,13 @@ Task.propTypes = {
     created: PropTypes.string,
     completed: PropTypes.bool,
     editing: PropTypes.bool,
-    time: PropTypes.string,
+    time: PropTypes.number,
   }),
   onDeleted: PropTypes.func.isRequired,
   onTaskClick: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
   onEditTask: PropTypes.func.isRequired,
+  onTimerFinished: PropTypes.func.isRequired,
 };
 
 Task.defaultProps = {

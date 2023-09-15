@@ -6,7 +6,7 @@ import Task from '../Task';
 import './TaskList.css';
 
 function TaskList({
-  tasks, onDeleted, onTaskClick, onEditClick, onEditTask,
+  tasks, onDeleted, onTaskClick, onEditClick, onEditTask, onTimerFinished,
 }) {
   return (
     <ul className="todo-list">
@@ -18,6 +18,7 @@ function TaskList({
           onTaskClick={() => onTaskClick(task.id)}
           onEditClick={() => onEditClick(task.id)}
           onEditTask={onEditTask}
+          onTimerFinished={onTimerFinished}
         />
       ))}
     </ul>
@@ -32,13 +33,14 @@ TaskList.propTypes = {
       created: PropTypes.string,
       completed: PropTypes.bool,
       editing: PropTypes.bool,
-      time: PropTypes.string,
+      time: PropTypes.number,
     }),
   ),
   onDeleted: PropTypes.func.isRequired,
   onTaskClick: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
   onEditTask: PropTypes.func.isRequired,
+  onTimerFinished: PropTypes.func.isRequired,
 };
 
 TaskList.defaultProps = {
