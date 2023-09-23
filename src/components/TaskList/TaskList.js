@@ -5,8 +5,13 @@ import Task from '../Task';
 
 import './TaskList.css';
 
-function TaskList({
-  tasks, onDeleted, onTaskClick, onEditClick, onEditTask, onTimerFinished,
+export default function TaskList({
+  tasks,
+  onDeleted,
+  onTaskClick,
+  onEditClick,
+  onEditTask,
+  onTimerFinished,
 }) {
   return (
     <ul className="todo-list">
@@ -46,5 +51,3 @@ TaskList.propTypes = {
 TaskList.defaultProps = {
   tasks: [],
 };
-
-export default TaskList;

@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from 'date-fns';
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import NewTaskForm from '../NewTaskForm';
 import TaskList from '../TaskList';
@@ -7,17 +7,12 @@ import Footer from '../Footer';
 
 import './app.css';
 
-export default class App extends Component {
-  state = {
-    tasks: [
-    ],
-    filter: 'All',
-    idList: 0,
-  };
+export default function App() {
+  const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState('All');
+  const [idList, setIdList] = useState(0);
 
-  AddTask = (text, timer) => {
-    const { idList } = this.state;
-
+  const addTask = (text, timer) => {
     const newItem = {
       id: idList,
       description: text,
@@ -29,34 +24,27 @@ export default class App extends Component {
 
     const newIdList = idList + 1;
 
-    this.setState((prevState) => ({
-      tasks: [...prevState.tasks, newItem],
-      idList: newIdList,
+    setTasks((prevTasks) => [...prevTasks, newItem]);
+    setIdList(newIdList);
+  };
+
+  const deleteTask = (id) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  };
+
+  const editTask = (id, text) => {
+    setTasks((prevTasks) => prevTasks.map((element) => {
+      if (element.id === id) {
+        return {
+          ...element,
+          description: text,
+        };
+      }
+      return element;
     }));
   };
 
-  DeleteTask = (id) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.filter((task) => task.id !== id),
-    }));
-  };
-
-  EditTask = (id, text) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.map((element) => {
-        if (element.id === id) {
-          return {
-            ...element,
-            description: text,
-          };
-        }
-        return element;
-      }),
-    }));
-  };
-
-  // eslint-disable-next-line class-methods-use-this
-  ToggleProperty = (arr, id, propName) => {
+  const toggleProperty = (arr, id, propName) => {
     const idx = arr.findIndex((el) => el.id === id);
 
     const oldItem = arr[idx];
@@ -68,73 +56,66 @@ export default class App extends Component {
     return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
   };
 
-  handleTimerFinished = (id, secs) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.map((element) => {
-        if (element.id === id) {
-          return {
-            ...element,
-            time: secs,
-          };
-        }
-        return element;
-      }),
+  const handleTimerFinished = (id, secs) => {
+    setTasks((prevTasks) => prevTasks.map((element) => {
+      if (element.id === id) {
+        return {
+          ...element,
+          time: secs,
+        };
+      }
+      return element;
     }));
   };
 
-  TaskClick = (id) => {
-    this.setState(({ tasks }) => ({
-      tasks: this.ToggleProperty(tasks, id, 'completed'),
-    }));
+  const taskClick = (id) => {
+    setTasks((prevTasks) => toggleProperty(prevTasks, id, 'completed'));
   };
 
-  EditClick = (id) => {
-    this.setState(({ tasks }) => ({
-      tasks: this.ToggleProperty(tasks, id, 'editing'),
-    }));
+  const editClick = (id) => {
+    setTasks((prevTasks) => toggleProperty(prevTasks, id, 'editing'));
   };
 
-  changeFilter = (data) => {
-    this.setState({ filter: data });
+  const changeFilter = (data) => {
+    setFilter(data);
   };
 
-  clearCompleted = () => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.filter((element) => !element.completed),
-    }));
+  const clearCompleted = () => {
+    setTasks((prevTasks) => prevTasks.filter((element) => !element.completed));
   };
 
-  render() {
-    const { tasks, filter } = this.state;
-    const filterItems = ['All', 'Active', 'Completed'];
+  const filterItems = ['All', 'Active', 'Completed'];
 
-    return (
-      <section className="todoapp">
-        <NewTaskForm onAddTask={this.AddTask} />
-        <section className="main">
-          <TaskList
-            tasks={tasks.map((task) => {
-              if (filter === filterItems[0]
+  return (
+    <section className="todoapp">
+      <NewTaskForm onAddTask={addTask} />
+      <section className="main">
+        <TaskList
+          tasks={tasks
+            .map((task) => {
+              if (
+                filter === filterItems[0]
                 || (filter === filterItems[1] && !task.completed)
-                || (filter === filterItems[2] && task.completed)) {
+                || (filter === filterItems[2] && task.completed)
+              ) {
                 return task;
               }
               return null;
-            }).filter((task) => task !== null)}
-            onDeleted={this.DeleteTask}
-            onTaskClick={this.TaskClick}
-            onEditClick={this.EditClick}
-            onEditTask={this.EditTask}
-            onTimerFinished={this.handleTimerFinished}
-          />
-          <Footer
-            changeFilter={this.changeFilter}
-            clearCompleted={this.clearCompleted}
-            lefts={tasks.filter(({ completed }) => !completed).length}
-            filter={filter}
-          />
-        </section>
+            })
+            .filter((task) => task !== null)}
+          onDeleted={deleteTask}
+          onTaskClick={taskClick}
+          onEditClick={editClick}
+          onEditTask={editTask}
+          onTimerFinished={handleTimerFinished}
+        />
+        <Footer
+          changeFilter={changeFilter}
+          clearCompleted={clearCompleted}
+          lefts={tasks.filter(({ completed }) => !completed).length}
+          filter={filter}
+        />
       </section>
-    );
-  }
+    </section>
+  );
 }

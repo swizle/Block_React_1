@@ -5,8 +5,11 @@ import TasksFilter from '../TasksFilter';
 
 import './footer.css';
 
-function Footer({
-  changeFilter, clearCompleted, filter, lefts,
+export default function Footer({
+  changeFilter,
+  clearCompleted,
+  filter,
+  lefts,
 }) {
   return (
     <footer className="footer">
@@ -34,5 +37,3 @@ Footer.defaultProps = {
   lefts: 0,
   filter: 'All',
 };
-
-export default Footer;

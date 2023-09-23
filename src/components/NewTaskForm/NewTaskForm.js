@@ -1,78 +1,63 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './NewTaskForm.css';
 
-export default class NewTaskForm extends Component {
-  state = {
-    description: '',
-    timerSec: '',
-    timerMin: '',
+export default function NewTaskForm({ onAddTask }) {
+  const [description, setDescription] = useState('');
+  const [timerSec, setTimerSec] = useState('');
+  const [timerMin, setTimerMin] = useState('');
+
+  const onDescriptionChange = (e) => {
+    setDescription(e.target.value);
   };
 
-  onDescriptionChange = (e) => {
-    this.setState({
-      description: e.target.value,
-    });
+  const onTimerSecChange = (e) => {
+    setTimerSec(e.target.value);
   };
 
-  onTimerSecChange = (e) => {
-    this.setState({
-      timerSec: e.target.value,
-    });
+  const onTimerMinChange = (e) => {
+    setTimerMin(e.target.value);
   };
 
-  onTimerMinChange = (e) => {
-    this.setState({
-      timerMin: e.target.value,
-    });
-  };
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    const { onAddTask } = this.props;
-    const { description, timerSec, timerMin } = this.state;
 
     if (description.trim() !== '' && (timerSec || timerMin)) {
       onAddTask(description, Number(timerSec) + Number(timerMin) * 60);
-      this.setState({
-        description: '',
-        timerSec: 0,
-        timerMin: 0,
-      });
+      setDescription('');
+      setTimerSec('');
+      setTimerMin('');
     }
   };
 
-  render() {
-    const { description, timerSec, timerMin } = this.state;
-    return (
-      <header className="header">
-        <form className="new-todo-form" onSubmit={this.onSubmit}>
-          <h1>todos</h1>
-          <input
-            className="new-todo"
-            onChange={this.onDescriptionChange}
-            placeholder="What needs to be done"
-            value={description}
-          />
-          <input
-            className="new-todo-form__timer"
-            onChange={this.onTimerMinChange}
-            placeholder="Min"
-            value={timerMin}
-          />
-          <input
-            className="new-todo-form__timer"
-            onChange={this.onTimerSecChange}
-            placeholder="Sec"
-            value={timerSec}
-          />
-          <button type="submit" />
-        </form>
-      </header>
-    );
-  }
+  return (
+    <header className="header">
+      <form className="new-todo-form" onSubmit={onSubmit}>
+        <h1>todos</h1>
+        <input
+          className="new-todo"
+          onChange={onDescriptionChange}
+          placeholder="What needs to be done"
+          value={description}
+        />
+        <input
+          className="new-todo-form__timer"
+          onChange={onTimerMinChange}
+          placeholder="Min"
+          value={timerMin}
+        />
+        <input
+          className="new-todo-form__timer"
+          onChange={onTimerSecChange}
+          placeholder="Sec"
+          value={timerSec}
+        />
+        <button type="submit" />
+      </form>
+    </header>
+  );
 }
 
 NewTaskForm.propTypes = {

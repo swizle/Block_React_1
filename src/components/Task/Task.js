@@ -1,123 +1,100 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import './Task.css';
 
-export default class Task extends Component {
-  state = {
-    description2: this.getDescription(),
-    timerSeconds: this.getTimer(),
-    timerIsRunning: false,
-  };
+export default function Task({
+  task,
+  onDeleted,
+  onTaskClick,
+  onEditClick,
+  onEditTask,
+  onTimerFinished,
+}) {
+  const [description2, setDescription2] = useState('');
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerIsRunning, setTimerIsRunning] = useState(false);
 
-  componentWillUnmount() {
-    this.stopTimer();
-  }
+  useEffect(() => {
+    setDescription2(task.description);
+    setTimerSeconds(task.time);
+  }, [task]);
 
-  onSubmit = (e) => {
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (timerIsRunning && timerSeconds > 0) {
+      const interval = setInterval(() => {
+        setTimerSeconds((prevSeconds) => {
+          onTimerFinished(task.id, prevSeconds - 1);
+
+          if (prevSeconds <= 1) {
+            clearInterval(interval);
+            setTimerIsRunning(false);
+            return 0;
+          }
+          return prevSeconds - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [timerIsRunning, timerSeconds, task, onTimerFinished]);
+
+  const getColor = () => (timerIsRunning ? 'red' : 'gray');
+  const timerMinutes = Math.floor(timerSeconds / 60);
+
+  const onSubmit = (e) => {
     e.preventDefault();
-    const { onEditTask, onEditClick, task } = this.props;
-    const { description2 } = this.state;
     onEditTask(task.id, description2);
-    this.setState({ description2: '' });
     onEditClick();
   };
 
-  getDescription() {
-    const { task: { description } } = this.props;
-    return description;
-  }
-
-  getTimer() {
-    const { task: { time } } = this.props;
-    return time;
-  }
-
-  startTimer = () => {
-    const { timerIsRunning, timerSeconds } = this.state;
-    if (!timerIsRunning && timerSeconds > 0) {
-      this.setState({ timerIsRunning: true });
-      this.interval = setInterval(() => {
-        this.setState((prevState) => {
-          const { onTimerFinished, task } = this.props;
-          onTimerFinished(task.id, prevState.timerSeconds - 1);
-
-          if (prevState.timerSeconds <= 1) {
-            this.stopTimer();
-            return { timerSeconds: 0 };
-          }
-          return { timerSeconds: prevState.timerSeconds - 1 };
-        });
-      }, 1000);
-    }
-  };
-
-  stopTimer = () => {
-    const { timerIsRunning } = this.state;
-    if (timerIsRunning) {
-      clearInterval(this.interval);
-      this.setState({ timerIsRunning: false });
-    }
-  };
-
-  render() {
-    const {
-      task, onDeleted, onTaskClick, onEditClick,
-    } = this.props;
-    const {
-      id, description, created, completed, editing,
-    } = task;
-    const { description2, timerSeconds, timerIsRunning } = this.state;
-    const x = Math.floor(timerSeconds / 60);
-
-    const getColor = () => {
-      if (timerIsRunning) {
-        return 'red';
-      }
-      return 'gray';
-    };
-
-    return (
-      <li className={cn(task, { completed, editing })}>
-        <div className="view">
-          <input className="toggle" id={`task-${id}`} type="checkbox" defaultChecked={completed} onClick={onTaskClick} />
-          <label htmlFor={`edit-input-${id}`}>
-            <span className="title">{description}</span>
-            <span className="description" style={{ color: getColor() }}>
-              <button type="button" className="icon icon-play" onClick={this.startTimer} disabled={timerIsRunning} />
-              <button type="button" className="icon icon-pause" onClick={this.stopTimer} disabled={!timerIsRunning} />
-              {x}
-              :
-              {timerSeconds - x * 60}
-            </span>
-            <span className="created">
-              created
-              {' '}
-              {created}
-            </span>
-          </label>
-          <button type="button" className="icon icon-edit" onClick={onEditClick} />
-          <button type="button" className="icon icon-destroy" onClick={onDeleted} />
-        </div>
-        {editing && (
-          <form onSubmit={this.onSubmit}>
-            <input
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus
-              type="text"
-              id={`edit-input-${task.id}`}
-              className="edit"
-              value={description2}
-              onChange={(e) => this.setState({ description2: e.target.value })}
-              onKeyDown={(e) => { if (e.key === 'Escape') { onEditClick(); } }}
-            />
-          </form>
-        )}
-      </li>
-    );
-  }
+  return (
+    <li className={cn(task, { completed: task.completed, editing: task.editing })}>
+      <div className="view">
+        <input
+          className="toggle"
+          id={`task-${task.id}`}
+          type="checkbox"
+          defaultChecked={task.completed}
+          onClick={onTaskClick}
+        />
+        <label htmlFor={`edit-input-${task.id}`}>
+          <span className="title">{task.description}</span>
+          <span className="description" style={{ color: getColor() }}>
+            <button type="button" className="icon icon-play" onClick={() => setTimerIsRunning(true)} disabled={timerIsRunning} />
+            <button type="button" className="icon icon-pause" onClick={() => setTimerIsRunning(false)} disabled={!timerIsRunning} />
+            {timerMinutes}
+            :
+            {timerSeconds - timerMinutes * 60}
+          </span>
+          <span className="created">
+            created
+            {' '}
+            {task.created}
+          </span>
+        </label>
+        <button type="button" className="icon icon-edit" onClick={onEditClick} />
+        <button type="button" className="icon icon-destroy" onClick={onDeleted} />
+      </div>
+      {task.editing && (
+        <form onSubmit={onSubmit}>
+          <input
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+            type="text"
+            id={`edit-input-${task.id}`}
+            className="edit"
+            value={description2}
+            onChange={(e) => setDescription2(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Escape') onEditClick(); }}
+          />
+        </form>
+      )}
+    </li>
+  );
 }
 
 Task.propTypes = {

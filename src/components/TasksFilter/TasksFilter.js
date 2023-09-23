@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import './TasksFilter.css';
 
-function TasksFilter({ filter, changeFilter }) {
+export default function TasksFilter({ filter, changeFilter }) {
   const filterOptions = ['All', 'Active', 'Completed'];
 
   return (
@@ -31,5 +31,3 @@ TasksFilter.propTypes = {
 TasksFilter.defaultProps = {
   filter: 'All',
 };
-
-export default TasksFilter;
